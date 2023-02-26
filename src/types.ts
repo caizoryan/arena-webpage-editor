@@ -3,7 +3,7 @@ export type SidebarProps = {
   data: Object;
   setData: Function;
   classes: string[];
-  css: CssData;
+  css: CssBlock[];
   setCss: Function;
 };
 

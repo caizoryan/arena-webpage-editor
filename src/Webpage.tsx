@@ -14,11 +14,7 @@ const Webpage: Component<WebpageProps> = (props: any) => {
               <p class={block.title}>{block.content}</p>
             </Match>
             <Match when={block.class === "Image"}>
-              <img
-                class={block.title}
-                style="width: 80%; margin: 20px auto;"
-                src={block.image.original.url}
-              ></img>
+              <img class={block.title} src={block.image.original.url}></img>
             </Match>
           </Switch>
         )}

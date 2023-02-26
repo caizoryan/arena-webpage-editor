@@ -16,6 +16,7 @@ client
 // will recieve data from
 let [data, setData] = createSignal<Data>([]);
 let [cssData, setCssData] = createSignal<CssData>([]);
+let [style, setStyle] = createSignal("h1{font-size: 1000px;}");
 
 let classes = createMemo(() => {
   let titleList: string[] = data().map((block) => block.title);
@@ -23,20 +24,30 @@ let classes = createMemo(() => {
 });
 
 createEffect(() => {
-  console.log(classes());
   let d = classes().map((c) => {
     return { class: c, code: `.${c} { \n}` };
   });
   setCssData([...d]);
 });
 
+createEffect(() => {
+  // on change update dom to add this data onto it
+  let code = "";
+  for (const x of cssData()) {
+    code += `${x.code}`;
+  }
+  setStyle(code);
+});
+
 const App: Component = () => {
   return (
     <>
+      <style>{style()}</style>
       <div class="main-container">
+        <h1>hello</h1>
         <Webpage data={data()}></Webpage>
         <Sidebar
-          data={data}
+          data={data()}
           setData={setData}
           classes={classes()}
           css={cssData()}

@@ -16,14 +16,19 @@ const Sidebar: Component<SidebarProps> = (props) => {
   const [inputValue, setInputValue] = createSignal("");
   const [currentValue, setCurrentValue] = createSignal(0);
 
-  function handleInput(e: Event) {
-    // props.setCss()
-    // set the css code to current input
+  function handleInput(e: any) {
+    let swap = props.css.map((block) => {
+      if (block.class === selected())
+        return { class: block.class, code: e.currentTarget.value };
+      else return { class: block.class, code: block.code };
+    });
+    props.setCss(swap);
   }
   createEffect(() => {
     if (props.css.length === 0) {
       console.log("hmmmm");
     } else {
+      console.log(props.css);
       setCurrentValue(props.css.findIndex((css) => css.class === selected()));
     }
   });
@@ -32,6 +37,7 @@ const Sidebar: Component<SidebarProps> = (props) => {
     if (props.css.length != 0) setInputValue(props.css[currentValue()].code);
   });
 
+  // https://github.com/LXSMNSYC/solid-tiptap
   return (
     <div class="sidebar-container">
       <select

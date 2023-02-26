@@ -44,7 +44,6 @@ const App: Component = () => {
     <>
       <style>{style()}</style>
       <div class="main-container">
-        <h1>hello</h1>
         <Webpage data={data()}></Webpage>
         <Sidebar
           data={data()}

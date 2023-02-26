@@ -1,0 +1,32 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+.main-container {
+  display: flex;
+}
+
+.webpage-container {
+  display: flex;
+  flex-direction: column;
+  width: 70vw;
+  margin: 2.5vw;
+  height: 70vh;
+  overflow: scroll;
+  border: 1px solid black;
+}
+
+.sidebar-container {
+  display: flex;
+  flex-direction: column;
+  margin: 2.5vw;
+  width: 20vw;
+  border: 1px solid black;
+  height: 90vh;
+}
+
+.css-input {
+  width: 90%;
+  height: 400px;
+}

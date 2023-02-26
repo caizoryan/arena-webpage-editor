@@ -1,6 +1,11 @@
-import { Component, createEffect, createMemo, createSignal } from "solid-js";
+import {
+  Component,
+  createEffect,
+  createMemo,
+  createSignal,
+  onMount,
+} from "solid-js";
 import { ArenaClient } from "arena-ts";
-import { createStore } from "solid-js/store";
 import Sidebar from "./Sidebar";
 import Webpage from "./Webpage";
 import token from "./token";
@@ -15,27 +20,35 @@ client
 
 // will recieve data from
 let [data, setData] = createSignal<Data>([]);
-let [cssData, setCssData] = createSignal<CssData>([]);
+let [cssData, setCssData] = createSignal<string[]>([]);
 let [style, setStyle] = createSignal("h1{font-size: 1000px;}");
+let [editorData, setEditorData] = createSignal([]);
 
 let classes = createMemo(() => {
-  let titleList: string[] = data().map((block) => block.title);
-  return [...new Set(titleList)];
+  return [...new Set(data().map((block) => block.title))];
 });
 
 createEffect(() => {
-  let d = classes().map((c) => {
-    return { class: c, code: `.${c} { \n}` };
-  });
-  setCssData([...d]);
+  let outputData: any = editorData();
+  let temp;
+  if (outputData.blocks) {
+    temp = outputData.blocks.map((block) => {
+      if (block.data.text) return block.data.text;
+      else if (block.data.code) return block.data.code;
+      else console.log("added another tool?");
+    });
+  } else {
+    temp = [];
+  }
+
+  console.log(temp);
+  setCssData(temp);
 });
 
 createEffect(() => {
   // on change update dom to add this data onto it
   let code = "";
-  for (const x of cssData()) {
-    code += `${x.code}`;
-  }
+  if (cssData()) for (const x of cssData()) code += `${x}`;
   setStyle(code);
 });
 
@@ -43,14 +56,12 @@ const App: Component = () => {
   return (
     <>
       <style>{style()}</style>
+
       <div class="main-container">
         <Webpage data={data()}></Webpage>
         <Sidebar
-          data={data()}
-          setData={setData}
-          classes={classes()}
-          css={cssData()}
-          setCss={setCssData}
+          editorData={editorData()}
+          setEditorData={setEditorData}
         ></Sidebar>
       </div>
     </>

@@ -1,8 +1,17 @@
+# Arena Webpage Editor
+
+- Load a channnel and tinker with the css, see the css live update
+- [ ] Add capability of loading themes
+- [ ] Add capability of making block to block | user | channel connections using a .config file that can be stored on the channel along with a .stylesheet
+- [ ] Add html structure, eg: what if I wanna wrap all the images in one div and display them after everything or after x block. eg2: what if I wanna wrap everything that is titled process in a div and put it before everthing else.
+
+## Consider
+
+- [ ] how will the connections be rendered
+
 ## Usage
 
 Those templates dependencies are maintained via [pnpm](https://pnpm.io) via `pnpm up -Lri`.
-
-This is the reason you see a `pnpm-lock.yaml`. That being said, any package manager will work. This file can be safely be removed once you clone a template.
 
 ```bash
 $ npm install # or pnpm install or yarn install

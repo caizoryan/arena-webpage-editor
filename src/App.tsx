@@ -70,7 +70,6 @@ createEffect(() => {
     temp = [];
   }
 
-  console.log(temp);
   setCssData(temp);
 });
 

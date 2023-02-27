@@ -4,7 +4,6 @@ import { WebpageProps } from "./types";
 import "./style.css";
 
 const Webpage: Component<WebpageProps> = (props: any) => {
-  console.log(props.data);
   return (
     <>
       <style>{props.style}</style>

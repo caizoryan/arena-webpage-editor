@@ -15,6 +15,10 @@ import Webpage from "./Webpage";
 import "./style.css";
 import type { Data, CssData } from "./types";
 
+import { render } from "solid-js/web";
+
+const root = document.getElementById("root");
+
 const [store, setStore] = createLocalStorage();
 const [token, setToken] = createSignal("");
 const [searchResults, setSearchResults] = createSignal<SearchApiResponse>();
@@ -136,4 +140,4 @@ const App: Component = () => {
   );
 };
 
-export default App;
+render(() => <App />, root!);

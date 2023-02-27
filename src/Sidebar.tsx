@@ -13,14 +13,25 @@ const Sidebar: Component<SidebarProps> = (props) => {
   const editor = new EditorJS({
     holder: "editorjs",
     tools: {
-      class: CodeTool,
+      code: {
+        class: CodeTool,
+      },
     },
     onChange: (api, event) => {
       editor.save().then((outputData) => {
         props.setEditorData(outputData);
       });
     },
-
+    data: {
+      blocks: [
+        {
+          type: "code",
+          data: {
+            code: "img{\nwidth:80%;\n}",
+          },
+        },
+      ],
+    },
     autofocus: true,
     // defaultBlock: CodeTool,
   });
@@ -30,7 +41,7 @@ const Sidebar: Component<SidebarProps> = (props) => {
   // then set css
   return (
     <div class="sidebar-container">
-      <div id="editorjs" style="border: 1px solid black"></div>
+      <div id="editorjs"></div>
     </div>
   );
 };

@@ -5,6 +5,7 @@ export type SidebarProps = {
 };
 
 export type WebpageProps = {
+  style: string;
   data: Object;
 };
 

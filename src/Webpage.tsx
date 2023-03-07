@@ -1,9 +1,8 @@
 import { Component, Switch } from "solid-js";
 import { For, Match } from "solid-js";
-import { WebpageProps } from "./types";
 import "./style.css";
 
-const Webpage: Component<WebpageProps> = (props: any) => {
+const Webpage: Component<{ data: any[]; style: string }> = (props) => {
   return (
     <>
       <style>{props.style}</style>

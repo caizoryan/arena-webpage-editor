@@ -1,3 +1,5 @@
+import EitorJS from "@editorjs/editorjs";
+import CodeTool from "@editorjs/code";
 import {
   Component,
   createEffect,
@@ -10,15 +12,52 @@ import {
 import { ArenaClient } from "arena-ts";
 import type { SearchApiResponse } from "arena-ts";
 import { createLocalStorage } from "@solid-primitives/storage";
-import Sidebar from "./Sidebar";
 import Webpage from "./Webpage";
 import "./style.css";
-import type { Data, CssData } from "./types";
-
+import type { Data } from "./types";
+import { Layout } from "./Generator/Layout";
 import { render } from "solid-js/web";
 
-const root = document.getElementById("root");
+import type { SidebarProps } from "./types";
+import "./style.css";
+import { state } from "./State";
+import { transformState, updateChildren } from "./Generator/Utils";
+import { State } from "./Generator/Types";
 
+const Sidebar: Component<SidebarProps> = (props) => {
+  const [currentValue, setCurrentValue] = createSignal(0);
+
+  const editor = new EditorJS({
+    holder: "editorjs",
+    tools: {
+      code: {
+        class: CodeTool,
+      },
+    },
+    onChange: (api, event) => {
+      editor.save().then((outputData) => {
+        props.setEditorData(outputData);
+      });
+    },
+    data: {
+      blocks: [
+        {
+          type: "code",
+          data: {
+            code: "img{\nwidth:80%;\n}",
+          },
+        },
+      ],
+    },
+    autofocus: true,
+  });
+
+  return (
+    <div class="sidebar-container">
+      <div id="editorjs"></div>
+    </div>
+  );
+};
 const [store, setStore] = createLocalStorage();
 const [token, setToken] = createSignal("");
 const [searchResults, setSearchResults] = createSignal<SearchApiResponse>();
@@ -84,60 +123,150 @@ createEffect(() => {
   setStyle(code);
 });
 
+// updateChildren(1, [
+//   <Sidebar editorData={editorData()} setEditorData={setEditorData}></Sidebar>,
+// ]);
+
+const LoadChannel = () => {
+  return (
+    <div class="load-channel">
+      <p style="margin-right: 10px">Load Channel</p>
+      <input
+        style="height: 25px;margin-right: 10px"
+        type="text"
+        onInput={(e) => {
+          searchChannel(e.currentTarget.value);
+        }}
+      ></input>
+    </div>
+  );
+};
+const SearchResults = () => {
+  return (
+    <div>
+      <Show when={searchResults()?.channels}>
+        <For each={searchResults()?.channels}>
+          {(channel) => (
+            <p class="results" onClick={() => loadChannel(channel.slug)}>
+              {channel.title}
+            </p>
+          )}
+        </For>
+      </Show>
+    </div>
+  );
+};
+
+const WelcomeText = () => {
+  return (
+    <div class="welcome-text-container">
+      <h1>What is Student Archive</h1>
+      <p>
+        Student archive is a practice to document and preserve the work of OCAD
+        students. The website, the platform is meant to visualize all the
+        various views How can an archive contribute to a community? <br></br>How
+        can student projects turn into a platform just not meant for preserving
+        the work but also an oppoturnity to expand, collaborate and
+      </p>
+
+      <br></br>
+      <h1>Huh? Are.na?</h1>
+      <p>
+        Student Archive is built on top of Are.na, what this basically means is
+        that we use Are.na's already existing infrastructure to manage the
+        content that gets displayed here. So in order to add your work, you will
+        need an Are.na account (and it's free! Why don't you have it already?)
+      </p>
+      <h1>What about our Are.na account's security?</h1>
+      <p>
+        Don't worry, we have our own Are.na accounts. If you're still worried,
+        the source code is open source. Your are.na authentication is stored
+        locally on your device so only your current device will have access to
+        it. The server doesn't store that data.
+      </p>
+    </div>
+  );
+};
+
+const GenerateToken = () => {
+  return (
+    <div class="sign-up">
+      <h1>Enter your token Are.na token</h1>
+      <div class="token-input">
+        <input
+          type="text"
+          onInput={(e) => {
+            setInput(e.currentTarget.value);
+          }}
+        ></input>
+        <button
+          style="margin-right: 10px"
+          onClick={() => {
+            hasToken(input());
+            state2();
+          }}
+        >
+          save
+        </button>
+      </div>
+      <p>
+        Generate it <a href="https://arena-token-gen.vercel.app/">here</a>, it
+        will be stored in your local storage
+      </p>
+      <p>
+        If you do not have an are.na account, <a href="">go sign up!</a>
+      </p>
+    </div>
+  );
+};
+
+const stateObject2: State = [
+  {
+    id: 0,
+    styles: {
+      top: "1vh",
+      left: "1vw",
+      width: "98vw",
+      height: "20vh",
+      backgroundColor: "rgb(248, 248, 248)",
+    },
+    active: true,
+    children: [<LoadChannel></LoadChannel>],
+  },
+  {
+    id: 1,
+    styles: {
+      top: "22vh",
+      right: "1vw",
+      width: "98vw",
+      height: "78vh",
+      backgroundColor: "yellow",
+    },
+    active: true,
+    children: [<SearchResults></SearchResults>],
+  },
+];
+
+// STATES
+// 1. Main, sign up
+function state1() {
+  updateChildren(0, [<WelcomeText></WelcomeText>]);
+  updateChildren(1, [<GenerateToken></GenerateToken>]);
+}
+state1();
+// 2. Load channel
+function state2() {
+  transformState(stateObject2);
+}
+// 3. See out put
+
 const App: Component = () => {
   return (
     <>
-      <div class="main-container">
-        <Webpage data={data()} style={style()}></Webpage>
-        <Sidebar
-          editorData={editorData()}
-          setEditorData={setEditorData}
-        ></Sidebar>
-      </div>
-      <div class="load-channel">
-        <Show when={!store.token}>
-          <p style="margin-right: 10px">Enter your token</p>
-          <input
-            style="margin-right: 10px"
-            type="text"
-            onInput={(e) => {
-              setInput(e.currentTarget.value);
-            }}
-          ></input>
-          <button style="margin-right: 10px" onClick={() => hasToken(input())}>
-            save
-          </button>
-          <p>
-            Generate it <a href="https://arena-token-gen.vercel.app/">here</a>,
-            it will be stored in local storage
-          </p>
-        </Show>
-
-        <Show when={store.token}>
-          <p style="margin-right: 10px">Load Channel</p>
-          <input
-            style="height: 25px;margin-right: 10px"
-            type="text"
-            onInput={(e) => {
-              searchChannel(e.currentTarget.value);
-            }}
-          ></input>
-
-          <div>
-            <Show when={searchResults()?.channels}>
-              <For each={searchResults()?.channels}>
-                {(channel) => (
-                  <p class="results" onClick={() => loadChannel(channel.slug)}>
-                    {channel.title}
-                  </p>
-                )}
-              </For>
-            </Show>
-          </div>
-        </Show>
-      </div>
+      <Layout state={state}></Layout>
     </>
   );
 };
 
+const root = document.getElementById("root");
 render(() => <App />, root!);

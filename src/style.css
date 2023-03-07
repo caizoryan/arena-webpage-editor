@@ -85,18 +85,65 @@ img {
   margin: 20px auto;
 }
 
+.search-results-container {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  padding: 3%;
+  flex-wrap: wrap;
+}
+
 .results {
+  font-family: var(--textfont-1);
+  font-size: 25px;
+  padding: 2vw;
   cursor: pointer;
+  width: 25%;
+  height: 30%;
+  margin: 10px;
+  text-align: center;
+  border: 4px solid black;
 }
 
 .results:hover {
-  padding: 2px;
-  border: 1px solid black;
+  background-color: black;
+  color: white;
+  font-size: 35px;
+  font-family: var(--displayfont-2);
+}
+
+.user-name {
+  font-size: 14px;
+  font-family: var(--textfont-1);
 }
 
 .load-channel {
-  margin: 0 50px;
-  display: flex;
+  width: 90%;
+  margin: 3%;
+  height: 25%;
+}
+.load-channel p {
+  font-family: var(--displayfont-1);
+  font-size: 30px;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.load-channel input {
+  all: unset;
+  font-family: var(--textfont-2);
+  font-size: 20px;
+  border: 2px solid black;
+  padding: 0 10px;
+  background-color: white;
+  color: black;
+  width: 80%;
+  height: 100%;
+  transition: 100ms ease all;
+}
+.load-channel input:focus {
+  border: 2px solid black;
+  background-color: black;
+  color: white;
 }
 
 .ce-code__textarea {

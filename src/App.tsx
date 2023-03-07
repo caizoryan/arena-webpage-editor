@@ -130,9 +130,8 @@ createEffect(() => {
 const LoadChannel = () => {
   return (
     <div class="load-channel">
-      <p style="margin-right: 10px">Load Channel</p>
+      <p>Load Channel</p>
       <input
-        style="height: 25px;margin-right: 10px"
         type="text"
         onInput={(e) => {
           searchChannel(e.currentTarget.value);
@@ -143,12 +142,14 @@ const LoadChannel = () => {
 };
 const SearchResults = () => {
   return (
-    <div>
+    <div class="search-results-container">
       <Show when={searchResults()?.channels}>
         <For each={searchResults()?.channels}>
           {(channel) => (
             <p class="results" onClick={() => loadChannel(channel.slug)}>
               {channel.title}
+              <br></br>
+              <span class="user-name">{channel.user.full_name}</span>
             </p>
           )}
         </For>
@@ -224,10 +225,11 @@ const stateObject2: State = [
   {
     id: 0,
     styles: {
-      top: "1vh",
+      top: "3vh",
       left: "1vw",
       width: "98vw",
       height: "20vh",
+      transform: "rotate(-1deg)",
       backgroundColor: "rgb(248, 248, 248)",
     },
     active: true,
@@ -238,8 +240,10 @@ const stateObject2: State = [
     styles: {
       top: "22vh",
       right: "1vw",
-      width: "98vw",
+      width: "94vw",
       height: "78vh",
+      overflowY: "scroll",
+      transform: "rotate(1.5deg)",
       backgroundColor: "yellow",
     },
     active: true,
@@ -253,11 +257,12 @@ function state1() {
   updateChildren(0, [<WelcomeText></WelcomeText>]);
   updateChildren(1, [<GenerateToken></GenerateToken>]);
 }
-state1();
 // 2. Load channel
 function state2() {
   transformState(stateObject2);
 }
+
+state2();
 // 3. See out put
 
 const App: Component = () => {

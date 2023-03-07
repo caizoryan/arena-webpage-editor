@@ -1,4 +1,4 @@
-import EitorJS from "@editorjs/editorjs";
+import EditorJS from "@editorjs/editorjs";
 import CodeTool from "@editorjs/code";
 import {
   Component,
@@ -24,44 +24,67 @@ import { state } from "./State";
 import { transformState, updateChildren } from "./Generator/Utils";
 import { State } from "./Generator/Types";
 
-const Sidebar: Component<SidebarProps> = (props) => {
-  const [currentValue, setCurrentValue] = createSignal(0);
-
-  const editor = new EditorJS({
-    holder: "editorjs",
-    tools: {
-      code: {
-        class: CodeTool,
-      },
-    },
-    onChange: (api, event) => {
-      editor.save().then((outputData) => {
-        props.setEditorData(outputData);
-      });
-    },
-    data: {
-      blocks: [
-        {
-          type: "code",
-          data: {
-            code: "img{\nwidth:80%;\n}",
-          },
-        },
-      ],
-    },
-    autofocus: true,
-  });
-
-  return (
-    <div class="sidebar-container">
-      <div id="editorjs"></div>
-    </div>
-  );
-};
 const [store, setStore] = createLocalStorage();
 const [token, setToken] = createSignal("");
 const [searchResults, setSearchResults] = createSignal<SearchApiResponse>();
+const [editWebsite, setEditWebsite] = createSignal(false);
 
+const Sidebar: Component<SidebarProps> = (props) => {
+  const [currentValue, setCurrentValue] = createSignal(0);
+  let editor: any;
+  createEffect(() => {
+    if (editWebsite()) {
+      editor = new EditorJS({
+        holder: "editorjs",
+        tools: {
+          code: {
+            class: CodeTool,
+          },
+        },
+        onChange: (api, event) => {
+          editor.save().then((outputData: any) => {
+            props.setEditorData(outputData);
+          });
+        },
+        data: {
+          blocks: [
+            {
+              type: "code",
+              data: {
+                code: "img{\nwidth:80%;\n}",
+              },
+            },
+          ],
+        },
+        autofocus: true,
+      });
+    }
+  });
+  return (
+    <div class="sidebar-container">
+      <Show when={editWebsite()}>
+        <div id="editorjs"></div>
+        <div class="sidebar-buttons-container">
+          <button>Save!</button>
+        </div>
+      </Show>
+      <Show when={!editWebsite()}>
+        <div class="sidebar-buttons-container">
+          <p>
+            {" "}
+            Your project will be show like this on the main archive page while
+            people browse. Feel free to edit the css to customise it however you
+            want. If you wanna extend the functionality of the "Web Editor" to
+            do something specific, you can take a look at the source and try to
+            extend it or contact us and we can figure something out.
+          </p>
+          <button>Save!</button>
+          <button onClick={() => setEditWebsite(true)}>Edit this</button>
+        </div>
+      </Show>
+    </div>
+  );
+};
 let client: ArenaClient;
 
 onMount(() => {
@@ -146,7 +169,13 @@ const SearchResults = () => {
       <Show when={searchResults()?.channels}>
         <For each={searchResults()?.channels}>
           {(channel) => (
-            <p class="results" onClick={() => loadChannel(channel.slug)}>
+            <p
+              class="results"
+              onClick={() => {
+                loadChannel(channel.slug);
+                state3();
+              }}
+            >
               {channel.title}
               <br></br>
               <span class="user-name">{channel.user.full_name}</span>
@@ -180,10 +209,9 @@ const WelcomeText = () => {
       </p>
       <h1>What about our Are.na account's security?</h1>
       <p>
-        Don't worry, we have our own Are.na accounts. If you're still worried,
-        the source code is open source. Your are.na authentication is stored
-        locally on your device so only your current device will have access to
-        it. The server doesn't store that data.
+        Your are.na authentication is stored locally on your device so only your
+        current device will have access to it. The server doesn't store that
+        data.
       </p>
     </div>
   );
@@ -220,6 +248,40 @@ const GenerateToken = () => {
     </div>
   );
 };
+const stateObject3: State = [
+  {
+    id: 0,
+    styles: {
+      top: "10vh",
+      left: "1vw",
+      width: "80vw",
+      height: "80vh",
+      transform: "rotate(1deg)",
+      backgroundColor: "rgb(248, 248, 248)",
+    },
+    active: true,
+    children: [<Webpage data={data()} style={cssData}></Webpage>],
+  },
+  {
+    id: 1,
+    styles: {
+      top: "20vh",
+      right: "1vw",
+      width: "44vw",
+      height: "38vh",
+      overflowY: "scroll",
+      transform: "rotate(-1deg)",
+      backgroundColor: "yellow",
+    },
+    active: true,
+    children: [
+      <Sidebar
+        editorData={editorData()}
+        setEditorData={setEditorData}
+      ></Sidebar>,
+    ],
+  },
+];
 
 const stateObject2: State = [
   {
@@ -261,8 +323,11 @@ function state1() {
 function state2() {
   transformState(stateObject2);
 }
+function state3() {
+  transformState(stateObject3);
+}
 
-state2();
+state1();
 // 3. See out put
 
 const App: Component = () => {

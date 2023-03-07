@@ -89,52 +89,61 @@ const App: Component = () => {
     <>
       <div class="main-container">
         <Webpage data={data()} style={style()}></Webpage>
-        <Sidebar
-          editorData={editorData()}
-          setEditorData={setEditorData}
-        ></Sidebar>
-      </div>
-      <div class="load-channel">
-        <Show when={!store.token}>
-          <p style="margin-right: 10px">Enter your token</p>
-          <input
-            style="margin-right: 10px"
-            type="text"
-            onInput={(e) => {
-              setInput(e.currentTarget.value);
-            }}
-          ></input>
-          <button style="margin-right: 10px" onClick={() => hasToken(input())}>
-            save
-          </button>
-          <p>
-            Generate it <a href="https://arena-token-gen.vercel.app/">here</a>,
-            it will be stored in local storage
-          </p>
-        </Show>
+        <div class="sidebar-container">
+          <div class="load-channel">
+            <Show when={!store.token}>
+              <p id="titleload">Enter your token</p>
+              <input
+                style="margin-right: 10px"
+                type="text"
+                onInput={(e) => {
+                  setInput(e.currentTarget.value);
+                }}
+              ></input>
+              <button
+                style="margin-right: 10px"
+                onClick={() => hasToken(input())}
+              >
+                save
+              </button>
+              <p>
+                Generate it{" "}
+                <a href="https://arena-token-gen.vercel.app/">here</a>, it will
+                be stored in local storage
+              </p>
+            </Show>
 
-        <Show when={store.token}>
-          <p style="margin-right: 10px">Load Channel</p>
-          <input
-            style="height: 25px;margin-right: 10px"
-            type="text"
-            onInput={(e) => {
-              searchChannel(e.currentTarget.value);
-            }}
-          ></input>
+            <Show when={store.token}>
+              <p style="margin-right: 10px">Load Channel—</p>
+              <input
+                style="height: 25px;margin-right: 10px"
+                type="text"
+                onInput={(e) => {
+                  searchChannel(e.currentTarget.value);
+                }}
+              ></input>
 
-          <div>
-            <Show when={searchResults()?.channels}>
-              <For each={searchResults()?.channels}>
-                {(channel) => (
-                  <p class="results" onClick={() => loadChannel(channel.slug)}>
-                    {channel.title}
-                  </p>
-                )}
-              </For>
+              <div class="channelsresult">
+                <Show when={searchResults()?.channels}>
+                  <For each={searchResults()?.channels}>
+                    {(channel) => (
+                      <p
+                        class="results"
+                        onClick={() => loadChannel(channel.slug)}
+                      >
+                        {channel.title}
+                      </p>
+                    )}
+                  </For>
+                </Show>
+              </div>
             </Show>
           </div>
-        </Show>
+          <Sidebar
+            editorData={editorData()}
+            setEditorData={setEditorData}
+          ></Sidebar>
+        </div>
       </div>
     </>
   );

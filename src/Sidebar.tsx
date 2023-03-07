@@ -40,9 +40,8 @@ const Sidebar: Component<SidebarProps> = (props) => {
   // make snippets
   // then set css
   return (
-    <div class="sidebar-container">
       <div id="editorjs"></div>
-    </div>
+
   );
 };
 

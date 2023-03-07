@@ -8,6 +8,9 @@ const Webpage: Component<WebpageProps> = (props: any) => {
     <>
       <style>{props.style}</style>
       <div class="webpage-container">
+        <div class="headerdiv">
+          <img src="./Header.png" class="headerimage"></img>
+        </div>
         <For each={props.data}>
           {(block) => (
             <Switch>
